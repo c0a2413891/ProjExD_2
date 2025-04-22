@@ -14,6 +14,16 @@ DELTA = {pg.K_UP:(0,-5),
     }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
+def init_bb_imgs() -> tuple[list[pg.Surface],list[int]]:
+    bb_imgs = []
+    bb_accs = []
+    bb_accs = [a for a in range(1,11)] #加速度
+    for r in range(1,11): #拡大
+        bb_img = pg.Surface((20*r,20*r))
+        pg.draw.circle(bb_img,(255,0,0),(10*r,10*r),10*r)
+        return
+
 def gameover(screen: pg.Surface) -> None:
     font = pg.font.Font(None,100)
     txt = font.render("Game Over",True,(255,255,255)) 
@@ -22,7 +32,7 @@ def gameover(screen: pg.Surface) -> None:
     black_surface.set_alpha(150) 
     kkcry_img = pg.image.load("fig/8.png")
     rkkcry_img = pg.transform.flip(kkcry_img, True, False)
-    
+
     screen.blit(black_surface,[0,0])  
     screen.blit(rkkcry_img,[760,300])
     screen.blit(kkcry_img,[330,300])
@@ -81,6 +91,10 @@ def main():
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1]) #画面内に戻す
         screen.blit(kk_img, kk_rct)
         bb_rct.move_ip(vx,vy) #爆弾の移動
+
+        bb_imgs,bb_accs = init_bb_imgs() #関数の中の値を取得してる
+        avx = vx*bb_accs[min(tmr//500,9)] #速度
+        bb_img = bb_imgs[min(tmr//500,9)] #サイズ変更
 
         yoko,tate = check_bound(bb_rct) #爆弾の画面内判定
         if not yoko:
