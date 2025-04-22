@@ -16,6 +16,11 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 def gameover(screen: pg.Surface) -> None:
+    """
+    フォント
+    うす暗い背景
+    こうかとん二匹
+    """
     font = pg.font.Font(None,100)
     txt = font.render("Game Over",True,(255,255,255)) 
     black_surface = pg.Surface((WIDTH, HEIGHT))
