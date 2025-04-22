@@ -2,6 +2,7 @@ import os
 import random
 import sys
 import pygame as pg
+import time
 
 
 
@@ -13,6 +14,21 @@ DELTA = {pg.K_UP:(0,-5),
     }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def gameover(screen: pg.Surface) -> None:
+    font = pg.font.Font(None,100)
+    txt = font.render("Game Over",True,(255,255,255)) 
+    black_surface = pg.Surface((WIDTH, HEIGHT))
+    pg.draw.rect(black_surface,(0,0,0),pg.Rect(0,0,1600,800))
+    black_surface.set_alpha(150) 
+    kkcry_img = pg.image.load("fig/8.png")
+    rkkcry_img = pg.transform.flip(kkcry_img, True, False)
+    
+    screen.blit(black_surface,[0,0])  
+    screen.blit(rkkcry_img,[760,300])
+    screen.blit(kkcry_img,[330,300])
+    screen.blit(txt,[380,300])
+    pg.display.update()
+    time.sleep(5)
 def check_bound (rct:pg.Rect) -> tuple[bool,bool]:
     """
     引数：こうかとんrectまたは爆弾rect
@@ -40,10 +56,9 @@ def main():
     bb_img.set_colorkey((0,0,0))
     bb_rct = bb_img.get_rect()
     bb_rct.center = random.randint(0,WIDTH),random.randint(0,HEIGHT)
-    tmr = 0 
     vx = 5
     vy = -5
-
+    tmr = 0 
 
     while True:
         for event in pg.event.get():
@@ -51,8 +66,8 @@ def main():
                 return
         screen.blit(bg_img, [0, 0]) 
 
-        if kk_rct.colliderect(bb_rct): #こうかとんrectと爆弾が衝突したら
-            
+        if kk_rct.colliderect(bb_rct):#こうかとんrectと爆弾が衝突したら
+            gameover(screen)
             return
         
         key_lst = pg.key.get_pressed()
@@ -65,7 +80,6 @@ def main():
         if check_bound(kk_rct) != (True,True): #画面外だったら
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1]) #画面内に戻す
         screen.blit(kk_img, kk_rct)
-       
         bb_rct.move_ip(vx,vy) #爆弾の移動
 
         yoko,tate = check_bound(bb_rct) #爆弾の画面内判定
